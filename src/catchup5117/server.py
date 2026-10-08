@@ -1,8 +1,28 @@
-from flask import Flask, render_template, request, redirect, url_for,jsonify
+import os
+
+import psycopg
+from dotenv import load_dotenv
+from flask import Flask, jsonify, render_template, request
+
+load_dotenv(".env")
 
 app = Flask(__name__)
 
-guest_names = []
+
+def get_guests():
+    with psycopg.connect(os.environ["DATABASE_URL"]) as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT name FROM guest ORDER BY guest_id")
+            return [row[0] for row in cur.fetchall()]
+
+
+def save_guest(name):
+    with psycopg.connect(os.environ["DATABASE_URL"]) as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                "INSERT INTO guest (name) VALUES (%s)",
+                (name,),
+            )
 
 
 @app.route("/")
@@ -12,7 +32,7 @@ def home():
     return render_template(
         "index.html",
         user=user_name,
-        guests=guest_names
+        guests=get_guests(),
     )
 
 
@@ -28,9 +48,10 @@ def add_guest():
     if not guest_name:
         return jsonify({"error": "Name is required"}), 400
 
-    guest_names.append(guest_name)
+    save_guest(guest_name)
 
     return jsonify({"name": guest_name}), 201
+
 
 @app.route("/destination/<city>")
 def destination(city):
