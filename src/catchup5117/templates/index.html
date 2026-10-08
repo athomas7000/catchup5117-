@@ -5,12 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ashwin's Travel Guestbook</title>
-    <link rel="stylesheet" href="style.css"># connects css
-    <script src="script.js" defer></script># connectes js
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
 </head>
-
 <body>
     <h1>Ashwin's Travel Guestbook</h1>
+    <h2>Welcome, {{ user }}!</h2>
+    
+    {% if user == "unknown" %}
+    <p>Add your name to the URL using <code>?userName=Ashwin</code>.</p>
+    {% endif %}
 
 <p>
     A place to share travel recommendations and discover new destinations.
@@ -30,12 +34,18 @@
 <section>
     <h2>Guestbook</h2>
 
-    <label for="guest-name">Your name:</label>
-    <input id="guest-name" type="text">
+    <form action="/guestbook" method="POST">
+        <label for="guest-name">Your name:</label>
 
-    <button id="add-guest">Add guest</button>
+        <input id="guest-name" name="guestName" type="text" required>
 
-    <ul id="guest-list"></ul>
+        <button type="submit">Add guest</button>
+    </form>
+    <ul>
+        {% for guest in guests %}
+        <li>{{ guest }}</li>
+        {% endfor %}
+    </ul>
 </section>
 </body>
 
