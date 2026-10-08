@@ -5,25 +5,27 @@ function showMessage() {
 }
 
 button.addEventListener("click", showMessage);
-const nameInput = document.querySelector("#guest-name");
-const addGuestButton = document.querySelector("#add-guest");
+
+
+const guestForm = document.querySelector("#guest-form");
+const guestNameInput = document.querySelector("#guest-name");
 const guestList = document.querySelector("#guest-list");
 
+guestForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
 
+    const formData = new FormData(guestForm);
 
+    const response = await fetch("/guestbook", {
+        method: "POST",
+        body: formData
+    });
 
-function addGuest() {
-    const name = nameInput.value.trim();
-
-    if (name === "") {
-        return;
-    }
+    const guest = await response.json();
 
     const listItem = document.createElement("li");
-    listItem.textContent = name;
+    listItem.textContent = guest.name;
     guestList.appendChild(listItem);
 
-    nameInput.value = "";
-}
-
-addGuestButton.addEventListener("click", addGuest);
+    guestNameInput.value = "";
+});

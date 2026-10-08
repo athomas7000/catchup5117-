@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for,jsonify
 
 app = Flask(__name__)
 
@@ -25,7 +25,13 @@ def about():
 def add_guest():
     guest_name = request.form.get("guestName", "").strip()
 
-    if guest_name:
-      guest_names.append(guest_name)
+    if not guest_name:
+        return jsonify({"error": "Name is required"}), 400
 
-    return redirect(url_for("home"))
+    guest_names.append(guest_name)
+
+    return jsonify({"name": guest_name}), 201
+
+@app.route("/destination/<city>")
+def destination(city):
+    return f"<h1>Travel guide for {city}</h1>"

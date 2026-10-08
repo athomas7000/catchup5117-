@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ashwin's Travel Guestbook</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='script.js') }}?v=2" defer></script>
 </head>
 <body>
     <h1>Ashwin's Travel Guestbook</h1>
@@ -34,14 +34,14 @@
 <section>
     <h2>Guestbook</h2>
 
-    <form action="/guestbook" method="POST">
+    <form id="guest-form" action="/guestbook" method="POST">
         <label for="guest-name">Your name:</label>
 
         <input id="guest-name" name="guestName" type="text" required>
 
         <button type="submit">Add guest</button>
     </form>
-    <ul>
+    <ul id="guest-list">
         {% for guest in guests %}
         <li>{{ guest }}</li>
         {% endfor %}
